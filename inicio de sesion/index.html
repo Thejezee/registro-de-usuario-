@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Usuario</title>
+</head>
+<body>
+    <h2>Registro de Usuario</h2>
+    <form id="registroForm">
+        <div>
+            <label>Correo Electrónico:</label>
+            <input type="email" id="email" readonly>
+            <button type="button" onclick="generarEmailAleatorio()">Generar Correo</button>
+        </div>
+        <div>
+            <label>Nombre:</label>
+            <input type="text" id="nombre" required>
+        </div>
+        <div>
+            <label>Apellido:</label>
+            <input type="text" id="apellido" required>
+        </div>
+        <div>
+            <label>Fecha de Nacimiento:</label>
+            <input type="date" id="fechaNacimiento" required>
+        </div>
+        <div>
+            <label>Contraseña:</label>
+            <input type="password" id="contrasena" required>
+            <button type="button" onclick="generarContrasenaSegura()">Generar Contraseña</button>
+        </div>
+        <button type="submit" onclick="validarFormulario(event)">Registrarse</button>
+    </form>
+
+    <script>
+        function generarEmailAleatorio() {
+            const nombreAleatorio = Math.random().toString(36).substring(2, 10);
+            const dominios = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com'];
+            const dominioAleatorio = dominios[Math.floor(Math.random() * dominios.length)];
+            
+            document.getElementById('email').value = `${nombreAleatorio}@${dominioAleatorio}`;
+        }
+
+        function generarContrasenaSegura() {
+            const caracteresMayusculas = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const caracteresMinusculas = 'abcdefghijklmnopqrstuvwxyz';
+            const caracteresEspeciales = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            const digitos = '0123456789';
+
+            const mayuscula = caracteresMayusculas[Math.floor(Math.random() * caracteresMayusculas.length)];
+            const minuscula = caracteresMinusculas[Math.floor(Math.random() * caracteresMinusculas.length)];
+            const especial = caracteresEspeciales[Math.floor(Math.random() * caracteresEspeciales.length)];
+            const digito = digitos[Math.floor(Math.random() * digitos.length)];
+
+            const caracteresAdicionales = Array.from({length: 4}, () => 
+                [mayuscula, minuscula, caracteresEspeciales, digitos][Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)]
+            );
+
+            const contrasena = mayuscula + minuscula + especial + digito + caracteresAdicionales.join('');
+            const contrasenaAleatoria = contrasena.split('').sort(() => 0.5 - Math.random()).join('');
+
+            document.getElementById('contrasena').value = contrasenaAleatoria;
+        }
+
+        function validarFormulario(event) {
+            event.preventDefault();
+            
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const fechaNacimiento = document.getElementById('fechaNacimiento').value;
+            const contrasena = document.getElementById('contrasena').value;
+            const email = document.getElementById('email').value;
+
+            if (!nombre || !apellido || !fechaNacimiento || !contrasena || !email) {
+                alert('Por favor, complete todos los campos');
+                return;
+            }
+
+            const regexContrasena = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};:,.<>?]).{8,}$/;
+            if (!regexContrasena.test(contrasena)) {
+                alert('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial');
+                return;
+            }
+
+            alert('Registro exitoso!\n' + 
+                  'Nombre: ' + nombre + '\n' + 
+                  'Apellido: ' + apellido + '\n' + 
+                  'Fecha de Nacimiento: ' + fechaNacimiento + '\n' + 
+                  'Correo: ' + email);
+        }
+
+        window.onload = function() {
+            generarEmailAleatorio();
+            generarContrasenaSegura();
+        }
+    </script>
+</body>
+</html>
